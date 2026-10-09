@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101114">
+<title>Своё дело, свой график: онлайн-магазин дверей. 4 вопроса</title>
+<meta name="description" content="Онлайн-магазин дверей под ключ: без офиса, склада и сезона, запуск за 2 дня. 225&nbsp;000&nbsp;₽ или рассрочка 18&nbsp;750&nbsp;₽ в месяц на 12 месяцев. Ответьте на 4 вопроса и узнайте подробнее.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%23101114%22/%3E%3Crect x=%2210%22 y=%226%22 width=%2212%22 height=%2220%22 rx=%221%22 fill=%22none%22 stroke=%22%23FFD600%22 stroke-width=%222.5%22/%3E%3C/svg%3E">
+<link rel="preload" href="assets/intertight.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/hero_fire.webp" as="image" type="image/webp">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- 1. Старт -->
+  <section class="screen s-start on" id="s-start" data-screen="start">
+    <div class="hero">
+      <div class="brand">ПРОФИДВЕРИ</div>
+      <picture>
+        <source srcset="assets/hero_fire.webp" type="image/webp">
+        <img src="assets/hero_fire.jpg" width="620" height="592" alt="Основатель ПРОФИДВЕРИ рядом с горящей дверью в лесу">
+      </picture>
+    </div>
+    <div class="rule"></div>
+    <h1>Устали от найма, денег мало, а семью почти не <em>видите</em>?</h1>
+    <p class="sub">Своё дело, свой график: онлайн-магазин дверей под ключ. Ответьте на 4 вопроса и узнайте подробнее.</p>
+    <ul class="bens">
+      <li><i class="sq"></i>Без офиса, склада и сезона</li>
+      <li><i class="sq"></i>Можно начать, не уходя с работы</li>
+      <li><i class="sq"></i>Запуск за 2 дня. 225&nbsp;000&nbsp;₽ или 18&nbsp;750&nbsp;₽/мес</li>
+    </ul>
+    <div class="spacer"></div>
+    <button class="btn" type="button" id="startBtn">Пройти 4 вопроса</button>
+    <p class="fine">Около минуты. В конце пришлём подробности в удобный мессенджер</p>
+    <div class="foot">ИП Свиридова Александра Радиковна · <a href="privacy.html">Политика конфиденциальности</a></div>
+  </section>
+
+  <!-- 2. Вопросы (рендерятся из QUESTIONS) -->
+  <section class="screen s-q" id="s-q" data-screen="q">
+    <div class="brand">ПРОФИДВЕРИ</div>
+    <div class="top">
+      <button class="back" type="button" data-back aria-label="Назад">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="qmeta" id="qMeta">Вопрос 1 из 4</div>
+    </div>
+    <div class="bar"><i id="qBar"></i></div>
+    <h2 id="qTitle"></h2>
+    <div class="opts" id="qOpts" role="radiogroup"></div>
+    <div class="qfoot">
+      <p class="fine">В конце пришлём, как устроен бизнес, что входит в пакет и условия рассрочки</p>
+    </div>
+  </section>
+
+  <!-- 3. Итог + форма -->
+  <section class="screen s-form" id="s-form" data-screen="form">
+    <div class="brand">ПРОФИДВЕРИ</div>
+    <div class="top">
+      <button class="back" type="button" data-back aria-label="Назад">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="qmeta">Последний шаг</div>
+    </div>
+    <div class="bar"><i style="width:100%"></i></div>
+    <div class="photo">
+      <picture>
+        <source srcset="assets/family.webp" type="image/webp">
+        <img src="assets/family.jpg" width="520" height="480" alt="Основатель ПРОФИДВЕРИ с семьёй" loading="lazy">
+      </picture>
+    </div>
+    <h2>Вам подойдёт формат <em>без точки и закупок</em></h2>
+    <p class="sub">Пришлём, как устроен бизнес, что входит в пакет и условия рассрочки. Без спама.</p>
+
+    <form id="leadForm" novalidate autocomplete="on">
+      <div class="fld" id="f-name">
+        <label for="name">Имя</label>
+        <input class="inp" id="name" name="name" type="text" autocomplete="given-name" placeholder="Как к вам обращаться" maxlength="60">
+        <div class="err">Напишите, как к вам обращаться</div>
+      </div>
+      <div class="fld" id="f-phone">
+        <label for="phone">Телефон</label>
+        <input class="inp" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__">
+        <div class="err">Проверьте номер: нужно 10 цифр после +7</div>
+      </div>
+      <div class="fld" id="f-via">
+        <span class="lbl" id="viaLbl">Куда прислать подробности?</span>
+        <div class="chips" role="radiogroup" aria-labelledby="viaLbl">
+          <button type="button" class="chip" data-via="Telegram" role="radio" aria-checked="false">Telegram</button>
+          <button type="button" class="chip" data-via="MAX" role="radio" aria-checked="false">MAX</button>
+          <button type="button" class="chip" data-via="WhatsApp" role="radio" aria-checked="false">WhatsApp</button>
+          <button type="button" class="chip" data-via="Позвоните" role="radio" aria-checked="false">Позвоните</button>
+        </div>
+        <div class="err">Выберите, куда прислать</div>
+      </div>
+      <div class="hp" aria-hidden="true"><label>Сайт <input type="text" name="website" id="website" tabindex="-1" autocomplete="off"></label></div>
+      <label class="consent" id="f-consent">
+        <input type="checkbox" id="consent" name="consent">
+        <span class="box"></span>
+        <span>Даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a> ИП Свиридовой Александре Радиковне и принимаю <a href="privacy.html" target="_blank" rel="noopener">политику конфиденциальности</a></span>
+      </label>
+      <button class="btn" type="submit" id="sendBtn">Узнать подробнее</button>
+      <p class="fine">Напишем в выбранный мессенджер в рабочее время</p>
+    </form>
+    <div class="foot">ИП Свиридова Александра Радиковна · <a href="privacy.html">Политика конфиденциальности</a></div>
+  </section>
+
+  <!-- 4. Спасибо -->
+  <section class="screen s-thanks" id="s-thanks" data-screen="thanks">
+    <div class="brand">ПРОФИДВЕРИ</div>
+    <div class="okmark" aria-hidden="true"></div>
+    <h2 id="tTitle">Спасибо!</h2>
+    <p class="sub" id="tText">Пришлём подробности в выбранный мессенджер.</p>
+    <div class="photo">
+      <picture>
+        <source srcset="assets/family.webp" type="image/webp">
+        <img src="assets/family.jpg" width="520" height="480" alt="Основатель ПРОФИДВЕРИ с семьёй" loading="lazy">
+      </picture>
+    </div>
+    <ul class="bens">
+      <li><i class="sq"></i>Как устроен бизнес и что входит в пакет</li>
+      <li><i class="sq"></i>Условия: 225&nbsp;000&nbsp;₽ или 12 платежей по 18&nbsp;750&nbsp;₽</li>
+    </ul>
+    <div class="spacer"></div>
+    <div class="foot">ИП Свиридова Александра Радиковна · <a href="privacy.html">Политика конфиденциальности</a></div>
+  </section>
+
+</div>
+<noscript><p style="padding:22px;color:#F4F4F2">Для прохождения теста включите JavaScript.</p></noscript>
+<script src="assets/app.js" defer></script>
+</body>
+</html>
