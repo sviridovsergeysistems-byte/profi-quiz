@@ -28,10 +28,13 @@ var CONFIG = {
 
   // Яндекс Метрика: номер счётчика (только цифры). Пусто = Метрика не грузится.
   // Цели (создайте в Метрике как «JavaScript-событие» с такими идентификаторами):
-  //   quiz_start      нажали «Пройти 4 вопроса»
+  //   quiz_start       открыли квиз (показан стартовый экран)
   //   quiz_q1..quiz_q4 ответили на вопрос 1..4
-  //   quiz_form       открыли форму (последний шаг)
-  //   lead            отправили заявку (основная цель для оценки рекламы)
+  //   quiz_form_view   показана форма контактов (последний шаг)
+  //   quiz_lead        заявка отправлена (основная цель для оценки рекламы)
+  // Параметры каждой цели: banner = utm_term, group = "job" (utm_term на _job) или "business",
+  // payment = ответ на вопрос 4 (оплата сразу / рассрочка / изучаю), когда он уже есть.
+  // Составная цель «Воронка квиза» и отчёты по баннерам: см. README.txt, раздел «Метрика».
   metrikaId: "",      // например "98765432"
 
   requestTimeoutMs: 10000
@@ -78,11 +81,23 @@ var QUESTIONS = [
     window.ym(Number(CONFIG.metrikaId), "init", { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true,
       params: { utm_content: PARAMS.utm_content || "", utm_term: PARAMS.utm_term || "" } });
   }
-  function goal(name, params) {
-    try { if (CONFIG.metrikaId && window.ym) window.ym(Number(CONFIG.metrikaId), "reachGoal", name, params || {}); } catch (e) {}
-    if (!CONFIG.metrikaId) console.debug("[goal]", name, params || "");
+  var PAY = { "Оплатить сразу": "оплата сразу", "Рассрочка на 12 месяцев": "рассрочка", "Пока изучаю": "изучаю" };
+  function goalParams(extra) {
+    var term = PARAMS.utm_term || "";
+    var p = { banner: term || "(нет)", group: /_job$/i.test(term) ? "job" : "business" };
+    var q4 = state && state.answers && state.answers.q4;
+    if (q4) p.payment = PAY[q4] || q4;
+    if (extra) for (var k in extra) if (Object.prototype.hasOwnProperty.call(extra, k)) p[k] = extra[k];
+    return p;
   }
-  initMetrika();
+  var WITH_PAYMENT = { quiz_q4: 1, quiz_form_view: 1, quiz_lead: 1 };
+  function goal(name, extra) {
+    var params = goalParams(extra);
+    if (!WITH_PAYMENT[name]) delete params.payment;
+    try { if (CONFIG.metrikaId && typeof window.ym === "function") window.ym(Number(CONFIG.metrikaId), "reachGoal", name, params); } catch (e) {}
+    if (!CONFIG.metrikaId) { try { console.debug("[goal]", name, params); } catch (e) {} }
+  }
+  try { initMetrika(); } catch (e) {}
 
   /* ---------- Состояние и навигация ---------- */
   var state = { step: "start", answers: {} };   // step: start | 0..3 | form | thanks
@@ -94,7 +109,7 @@ var QUESTIONS = [
     var scr = step === "start" ? "start" : step === "form" ? "form" : step === "thanks" ? "thanks" : "q";
     $$(".screen").forEach(function (s) { s.classList.toggle("on", s.getAttribute("data-screen") === scr); });
     if (scr === "q") renderQuestion(step);
-    if (scr === "form") goal("quiz_form");
+    if (scr === "form") goal("quiz_form_view");
     if (push !== false) { try { history.pushState({ step: step }, "", location.pathname + location.search + "#" + (typeof step === "number" ? "q" + (step + 1) : step)); } catch (e) {} }
     window.scrollTo(0, 0);
   }
@@ -139,7 +154,7 @@ var QUESTIONS = [
     });
   }
 
-  $("#startBtn").addEventListener("click", function () { goal("quiz_start"); show(0); });
+  $("#startBtn").addEventListener("click", function () { show(0); });
 
   /* ---------- Телефон: маска +7 (XXX) XXX-XX-XX ---------- */
   var phone = $("#phone");
@@ -280,8 +295,9 @@ var QUESTIONS = [
 
     var btn = $("#sendBtn"); btn.disabled = true; btn.textContent = "Отправляем…";
     var p = buildPayload(name, d);
-    sendLead(p).catch(function () { queue(p); }).then(function () {
-      goal("lead", { contact_via: via, utm_content: p.utm.utm_content, utm_term: p.utm.utm_term });
+    sendLead(p).then(function () { return "sent"; }, function () { queue(p); return "queued"; }).then(function (status) {
+      // queued = сети не было, заявка сохранена и уйдёт при следующем открытии страницы
+      goal("quiz_lead", { contact_via: via, utm_content: p.utm.utm_content || "", status: status });
       $("#tTitle").textContent = "Спасибо, " + name + "!";
       $("#tText").textContent = via === "Позвоните"
         ? "Перезвоним на " + fmt(d) + " в рабочее время и расскажем подробности."
@@ -294,4 +310,5 @@ var QUESTIONS = [
 
   /* стартовая точка */
   try { history.replaceState({ step: "start" }, "", location.pathname + location.search); } catch (e) {}
+  goal("quiz_start");   // квиз открыт, показан стартовый экран (один раз за загрузку страницы)
 })();
